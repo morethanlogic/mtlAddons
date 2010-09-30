@@ -18,7 +18,8 @@ class mtlSignedPixels {
     
         void    allocate(int _width, int _height, int _glType);
         void    set(unsigned char* _pixels);
-    
+        void    clear();
+        
         void    operator =  (mtlSignedPixels& _other);
         void    operator += (mtlSignedPixels& _other);
         void    operator -= (mtlSignedPixels& _other);

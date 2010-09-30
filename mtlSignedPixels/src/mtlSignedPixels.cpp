@@ -18,15 +18,13 @@ mtlSignedPixels::mtlSignedPixels() {
 
 //--------------------------------------------------------------
 mtlSignedPixels::~mtlSignedPixels() {
-    if (pixels != NULL) 
-        delete [] pixels;
-    
-    if (uPixels != NULL) 
-        delete [] uPixels;
+    clear();
 }
 
 //--------------------------------------------------------------
 void mtlSignedPixels::allocate(int _width, int _height, int _glType) {
+    clear();
+    
     width   = _width;
     height  = _height;
     
@@ -56,6 +54,15 @@ void mtlSignedPixels::set(unsigned char* _pixels) {
         pixels[i] = _pixels[i];
     }
     dirtyPixels = true;
+}
+
+//--------------------------------------------------------------
+void mtlSignedPixels::clear() {
+    if (pixels != NULL) 
+        delete [] pixels;
+    
+    if (uPixels != NULL) 
+        delete [] uPixels;
 }
 
 //--------------------------------------------------------------------------------
