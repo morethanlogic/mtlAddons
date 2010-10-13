@@ -62,6 +62,5 @@ class mtlSceneManager {
         ofxTween                    tween;
         ofxEasingQuad               easing;
         float                       target;
-        bool                        switching;
     
 };

@@ -35,8 +35,6 @@ mtlSceneManager::mtlSceneManager() {
     currScene = NULL;
     nextName  = "";
     nextScene = NULL;
-    
-    switching = false;
 }
 
 //--------------------------------------------------------------
@@ -132,6 +130,11 @@ void mtlSceneManager::addScene(const string& _name, mtlScene* _scene) {
 
 //--------------------------------------------------------------
 bool mtlSceneManager::switchToScene(const string& _name, mtlSceneTransition _transition, bool _destroyLast) {
+    if (!tween.isCompleted()) {
+        ofLog(OF_LOG_WARNING, "mtlSceneManager::switchToScene() ignored as there is already a switch in progress");
+        return false;
+    }
+    
     map<string, mtlScene*>::iterator it = scenes.find(_name);
     if (it == scenes.end()) {
         ofLog(OF_LOG_ERROR, "mtlSceneManager::switchToScene() Scene '" + _name + "' does not exist");
@@ -186,6 +189,11 @@ bool mtlSceneManager::switchToScene(const string& _name, mtlSceneTransition _tra
 
 //--------------------------------------------------------------
 bool mtlSceneManager::addAndSwitchToScene(const string& _name, mtlScene* _scene, mtlSceneTransition _transition, bool _destroyLast) {
+    if (!tween.isCompleted()) {
+        ofLog(OF_LOG_WARNING, "mtlSceneManager::addAndSwitchToScene() ignored as there is already a switch in progress");
+        return false;
+    }
+    
     addScene(_name, _scene);
     return switchToScene(_name, _transition, _destroyLast);
 }
