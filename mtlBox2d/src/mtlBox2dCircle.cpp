@@ -55,23 +55,13 @@ void mtlBox2dCircle::draw() {
     {
         glTranslatef(getPosition().x, getPosition().y, 0);
         
+        ofNoFill();
         if (fixed) {
-            ofSetColor(255, 0, 255);
-            ofFill();
-            ofCircle(0, 0, radius);	
+            ofSetColor(mtlBox2d::debugFixedColor.r, mtlBox2d::debugFixedColor.g, mtlBox2d::debugFixedColor.b, mtlBox2d::debugFixedColor.a);
         } else {
-            ofSetColor(0, 255, 255);
-            ofNoFill();
-            ofCircle(0, 0, radius);
-            
-            ofSetColor(255, 0, 255);
-            ofFill();
-            ofCircle(0, 0, radius/10.f);
-            
-            ofSetColor(255, 255, 255);
-            ofNoFill();
-            ofCircle(0, 0, radius/5.f);
+            ofSetColor(mtlBox2d::debugBodyColor.r, mtlBox2d::debugBodyColor.g, mtlBox2d::debugBodyColor.b, mtlBox2d::debugBodyColor.a);
         }
+        ofCircle(0, 0, radius);	
     }
     glPopMatrix();
     
@@ -80,7 +70,7 @@ void mtlBox2dCircle::draw() {
     b2Vec2	axis		= xf.R.col1;
     b2Vec2	p			= center + radius / BOX2D_SCALE * axis;
     
-    ofSetColor(255, 0, 255);
+    ofSetColor(mtlBox2d::debugJointColor.r, mtlBox2d::debugJointColor.g, mtlBox2d::debugJointColor.b, mtlBox2d::debugJointColor.a);
     dirVector[0] = getPosition().x;
     dirVector[1] = getPosition().y;
     dirVector[2] = p.x * BOX2D_SCALE;
@@ -96,6 +86,7 @@ float mtlBox2dCircle::getRadius() {
     if (body) {
         return (((b2CircleShape*)(body->GetShapeList()))->GetRadius() * BOX2D_SCALE);
     }
+    return 0;
 }
 
 

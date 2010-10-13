@@ -63,16 +63,14 @@ void mtlBox2dRect::draw() {
         verts[i*2 + 1] = currVert.y;
     }
     
+    ofNoFill();
+    if (fixed) {
+        ofSetColor(mtlBox2d::debugFixedColor.r, mtlBox2d::debugFixedColor.g, mtlBox2d::debugFixedColor.b, mtlBox2d::debugFixedColor.a);
+    } else {
+        ofSetColor(mtlBox2d::debugBodyColor.r, mtlBox2d::debugBodyColor.g, mtlBox2d::debugBodyColor.b, mtlBox2d::debugBodyColor.a);
+    }
+    
     glEnableClientState(GL_VERTEX_ARRAY);		
     glVertexPointer(2, GL_FLOAT, 0, verts);
-    
-    ofEnableAlphaBlending();
-    ofSetColor(255, 255, 255, 100);
-    ofFill();
     glDrawArrays(GL_LINE_LOOP, 0, count);
-    
-    ofSetColor(0, 255, 255);
-    ofNoFill();
-    glDrawArrays(GL_LINE_LOOP, 0, count);
-    ofDisableAlphaBlending();
 }
