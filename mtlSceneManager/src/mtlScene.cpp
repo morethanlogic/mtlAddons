@@ -26,7 +26,7 @@ mtlScene::~mtlScene() {
 }
 
 //--------------------------------------------------------------
-void mtlScene::enter() { 
+void mtlScene::enter() {
     ofNotifyEvent(enterCompleted, status, this); 
 }
 
