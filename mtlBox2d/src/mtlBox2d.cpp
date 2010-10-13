@@ -1,16 +1,44 @@
 #include "mtlBox2d.h"
 
 //--------------------------------------------------------------
+ofColor mtlBox2d::debugBodyColor;
+ofColor mtlBox2d::debugJointColor;
+ofColor mtlBox2d::debugFixedColor;
+
+//--------------------------------------------------------------
+void mtlBox2d::setDebugColors(int _bodyR,  int _bodyG,  int _bodyB,  int _bodyA,
+                              int _jointR, int _jointG, int _jointB, int _jointA,
+                              int _fixedR, int _fixedG, int _fixedB, int _fixedA) {
+    debugBodyColor.r  = _bodyR;
+    debugBodyColor.g  = _bodyG;
+    debugBodyColor.b  = _bodyB;
+    debugBodyColor.a  = _bodyA;
+    
+    debugJointColor.r = _jointR;
+    debugJointColor.g = _jointG;
+    debugJointColor.b = _jointB;
+    debugJointColor.a = _jointA;
+    
+    debugFixedColor.r = _fixedR;
+    debugFixedColor.g = _fixedG;
+    debugFixedColor.b = _fixedB;
+    debugFixedColor.a = _fixedA;
+}
+
+//--------------------------------------------------------------
 mtlBox2d::mtlBox2d() {
     // create the world
     worldAABB.lowerBound.Set(-100.0f, -100.0f);
 	worldAABB.upperBound.Set( 100.0f,  100.0f);
     world = new b2World(worldAABB, b2Vec2(0, 0), true);
+    
+    setDebugColors(204,   0,   0, 255, 
+                   252, 213,  10, 255,
+                   255, 255, 255, 255);
 }
 
 //--------------------------------------------------------------
 mtlBox2d::~mtlBox2d() {
-    // TODO make sure this is proper
     delete world;
     world = NULL;
 }
