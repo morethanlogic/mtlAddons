@@ -28,8 +28,8 @@ void mtlSceneManager::setTransitionDuration(unsigned _duration) {
 
 //--------------------------------------------------------------
 mtlSceneManager::mtlSceneManager() {
-    ofAddListener(ofEvents.update, this, &mtlSceneManager::update);
-    ofAddListener(ofEvents.draw,   this, &mtlSceneManager::draw);
+    ofAddListener(ofEvents.update, this, &mtlSceneManager::_update);
+    ofAddListener(ofEvents.draw,   this, &mtlSceneManager::_draw);
     
     currName  = "";
     currScene = NULL;
@@ -43,7 +43,7 @@ mtlSceneManager::~mtlSceneManager() {
 }
 
 //--------------------------------------------------------------
-void mtlSceneManager::update(ofEventArgs& _args) {
+void mtlSceneManager::_update(ofEventArgs& _args) {
     if (currScene) currScene->update();
     if (nextScene) nextScene->update();
     
@@ -99,22 +99,17 @@ void mtlSceneManager::update(ofEventArgs& _args) {
         
         // enter the current scene
         ofAddListener(currScene->enterCompleted, this, &mtlSceneManager::onEnterCompleted);
-        currScene->enter();
+        currScene->_enter();
     }
 }
 
 //--------------------------------------------------------------
-void mtlSceneManager::draw(ofEventArgs& _args) {
-    if (currScene) {
-        currScene->pushScene();
-        currScene->draw();
-        currScene->popScene();
-    }
-    if (nextScene) {
-        nextScene->pushScene();
-        nextScene->draw();
-        nextScene->popScene();
-    }
+void mtlSceneManager::_draw(ofEventArgs& _args) {
+    if (currScene)
+        currScene->_draw();
+    
+    if (nextScene)
+        nextScene->_draw();
 }
 
 //--------------------------------------------------------------
@@ -177,7 +172,7 @@ bool mtlSceneManager::switchToScene(const string& _name, mtlSceneTransition _tra
     if (currScene) {
         // exit the current scene
         ofAddListener(currScene->exitCompleted, this, &mtlSceneManager::onExitCompleted);
-        currScene->exit();
+        currScene->_exit();
     } else {
         // call the exit completed callback manually
         int status = 0;

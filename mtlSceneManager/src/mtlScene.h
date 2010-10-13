@@ -18,14 +18,14 @@ class mtlScene {
                         mtlScene();
         virtual         ~mtlScene();
             
-        virtual void	enter();
-        virtual void	exit();
-                                 
-                void    pushScene();
-                void    popScene();
+                void    _enter();
+                void    _exit();
+        virtual void    _draw();
     
+        virtual void	enter()  {}
+        virtual void	exit()   {}
         virtual void	update() {}
-        virtual void	draw();
+        virtual void	draw()   {}
     
                 void    enableTouchEvents();
                 void    disableTouchEvents();

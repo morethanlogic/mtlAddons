@@ -26,29 +26,25 @@ mtlScene::~mtlScene() {
 }
 
 //--------------------------------------------------------------
-void mtlScene::enter() {
+void mtlScene::_enter() {
+    enter();
     ofNotifyEvent(enterCompleted, status, this); 
 }
 
 //--------------------------------------------------------------
-void mtlScene::exit() {
+void mtlScene::_exit() {
+    exit();
     ofNotifyEvent(exitCompleted, status, this); 
 }
 
 //--------------------------------------------------------------
-void mtlScene::pushScene() {
+void mtlScene::_draw() {
     glPushMatrix();
     glTranslatef(x, y, 0);
-}
-
-//--------------------------------------------------------------
-void mtlScene::popScene() {
+    {
+        draw();
+    }
     glPopMatrix();
-}
-
-//--------------------------------------------------------------
-void mtlScene::draw() { 
-    ofLog(OF_LOG_WARNING, "You must override mtlScene::draw()"); 
 }
 
 //--------------------------------------------------------------

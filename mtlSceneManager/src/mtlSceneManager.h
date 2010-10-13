@@ -37,8 +37,8 @@ class mtlSceneManager {
                                     mtlSceneManager();
                                     ~mtlSceneManager();
     
-        void                        update(ofEventArgs& _args);
-        void                        draw(ofEventArgs& _args);
+        void                        _update(ofEventArgs& _args);
+        void                        _draw(ofEventArgs& _args);
     
         void                        addScene(const string& _name, mtlScene* _scene);
         bool                        switchToScene(const string& _name, mtlSceneTransition _transition = mtlSceneTransitionNone, bool _destroyLast = true);

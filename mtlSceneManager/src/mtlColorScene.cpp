@@ -24,8 +24,16 @@ mtlColorScene::mtlColorScene(int _r, int _g, int _b) {
 }
 
 //--------------------------------------------------------------
-void mtlColorScene::draw() {
-    ofSetColor(r, g, b, alpha);
-    ofFill();
-    ofRect(0, 0, width, height);
+void mtlColorScene::_draw() {
+    glPushMatrix();
+    glTranslatef(x, y, 0);
+    {
+        // draw the background fill
+        ofSetColor(r, g, b, alpha);
+        ofFill();
+        ofRect(0, 0, width, height);
+        
+        draw();
+    }
+    glPopMatrix();
 }

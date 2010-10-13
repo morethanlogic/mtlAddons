@@ -17,7 +17,7 @@ class mtlColorScene : public mtlScene {
                 mtlColorScene(int _hex);
                 mtlColorScene(int _r, int _g, int _b);
         
-        void	draw();
+        void	_draw();
     
     protected:
         int     r, g, b;
