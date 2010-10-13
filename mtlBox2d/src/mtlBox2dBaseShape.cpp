@@ -110,7 +110,7 @@ void mtlBox2dBaseShape::setVelocity(float x, float y) {
 }
 
 //------------------------------------------------ 
-const b2Vec2& mtlBox2dBaseShape::getVelocity() {
+const b2Vec2 mtlBox2dBaseShape::getVelocity() {
     return body->GetLinearVelocity();
 }
 

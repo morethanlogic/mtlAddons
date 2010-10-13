@@ -36,7 +36,7 @@ class mtlBox2dBaseShape {
     
         void            setVelocity(const b2Vec2& v);
         void            setVelocity(float x, float y);
-        const b2Vec2&   getVelocity();
+        const b2Vec2    getVelocity();
     
         void            setAngularVelocity(float v);
         float           getAngularVelocity();
