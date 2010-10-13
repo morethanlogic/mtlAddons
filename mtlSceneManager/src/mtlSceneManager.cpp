@@ -31,7 +31,9 @@ mtlSceneManager::mtlSceneManager() {
     ofAddListener(ofEvents.update, this, &mtlSceneManager::update);
     ofAddListener(ofEvents.draw,   this, &mtlSceneManager::draw);
     
+    currName  = "";
     currScene = NULL;
+    nextName  = "";
     nextScene = NULL;
     
     switching = false;
@@ -90,9 +92,11 @@ void mtlSceneManager::update(ofEventArgs& _args) {
     }
     
     if (tween.isCompleted()) {
-        if (destroyLast) {
+        if (destroyLast && currScene) {
+            scenes.erase(currName);
             delete currScene;
         }
+        currName  = nextName;
         currScene = nextScene;
         
         // enter the current scene
@@ -135,6 +139,7 @@ bool mtlSceneManager::switchToScene(const string& _name, mtlSceneTransition _tra
     }
     
     // set up the transition
+    nextName       = it->first;
     nextScene      = it->second;
     nextTransition = _transition;
     destroyLast    = _destroyLast;

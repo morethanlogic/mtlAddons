@@ -52,7 +52,9 @@ class mtlSceneManager {
         static unsigned             duration;
         
         map<string, mtlScene*>      scenes;
+        string                      currName;
         mtlScene*                   currScene;
+        string                      nextName;
         mtlScene*                   nextScene;
         mtlSceneTransition          nextTransition;
         bool                        destroyLast;
