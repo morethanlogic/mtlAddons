@@ -31,7 +31,11 @@ void mtlColorScene::_draw() {
         // draw the background fill
         ofSetColor(r, g, b, alpha);
         ofFill();
-        ofRect(0, 0, width, height);
+        if (ofGetRectMode() == OF_RECTMODE_CORNER) {
+            ofRect(0, 0, width, height);
+        } else {
+            ofRect(width/2, height/2, width, height);
+        }
         
         draw();
     }
