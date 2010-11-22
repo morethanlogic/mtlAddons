@@ -1,3 +1,13 @@
+/*
+ *  mtlBox2d.cpp
+ *  mtlBox2d
+ *
+ *  Created by Elie Zananiri on 10-10-06.
+ *  Based on ofxBox2d by Todd Vanderlin: http://code.google.com/p/vanderlin/
+ *  Copyright 2010 silentlyCrashing::net. All rights reserved.
+ *
+ */
+
 #include "mtlBox2d.h"
 
 //--------------------------------------------------------------
@@ -28,9 +38,7 @@ void mtlBox2d::setDebugColors(int _bodyR,  int _bodyG,  int _bodyB,  int _bodyA,
 //--------------------------------------------------------------
 mtlBox2d::mtlBox2d() {
     // create the world
-    worldAABB.lowerBound.Set(-100.0f, -100.0f);
-	worldAABB.upperBound.Set( 100.0f,  100.0f);
-    world = new b2World(worldAABB, b2Vec2(0, 0), true);
+    m_world = new b2World(b2Vec2(0, 0), true);
     
     setDebugColors(204,   0,   0, 255, 
                    252, 213,  10, 255,
@@ -39,67 +47,62 @@ mtlBox2d::mtlBox2d() {
 
 //--------------------------------------------------------------
 mtlBox2d::~mtlBox2d() {
-    delete world;
-    world = NULL;
+    delete m_world;
+    m_world = NULL;
 }
 
 //--------------------------------------------------------------
 void mtlBox2d::createBounds(float _x, float _y, float _width, float _height) {
-    if (world == NULL) {
+    if (m_world == NULL) {
         ofLog(OF_LOG_WARNING, "mtlBox2d::createBounds() Must have a valid b2World");
 		return;
     }
-	
-	b2BodyDef bd;
-	bd.position.Set(0, 0);
-	bounds = world->CreateBody(&bd);	
-	b2PolygonDef sd;
-	sd.filter.groupIndex = 1;
-	sd.density     = 0.f;
-	sd.restitution = 0.f;
-	sd.friction    = 0.6f;
     
-	float thickness = 2.f / BOX2D_SCALE;
-	//right
-	sd.SetAsBox(thickness, 
-                (_height / BOX2D_SCALE) / 2.f, 
-                b2Vec2((_width / BOX2D_SCALE), (_height / BOX2D_SCALE) / 2.f), 
-                0.0);
-	bounds->CreateShape(&sd);
-	//left
-	sd.SetAsBox(thickness, 
-                (_height / BOX2D_SCALE) / 2.f, 
-                b2Vec2(0, (_height / BOX2D_SCALE) / 2.f), 
-                0.0);
-	bounds->CreateShape(&sd);
-	//top
-	sd.SetAsBox((_width/BOX2D_SCALE) / 2.f, 
-                thickness, 
-                b2Vec2((_width / BOX2D_SCALE) / 2.f, 0), 
-                0.0);
-	bounds->CreateShape(&sd);
-	//bottom
-	sd.SetAsBox((_width / BOX2D_SCALE) / 2.f, 
-                thickness, 
-                b2Vec2((_width / BOX2D_SCALE) / 2.f, _height / BOX2D_SCALE), 
-                0.0);
-	bounds->CreateShape(&sd);
+    b2BodyDef bd;
+    b2Body* ground = m_world->CreateBody(&bd);
+    
+    b2PolygonShape shape;
+    
+    // bottom
+    shape.SetAsEdge(b2Vec2(0,0), b2Vec2(PIX2M(_width),0));
+    ground->CreateFixture(&shape, 0.0f);
+    
+    // top
+    shape.SetAsEdge(b2Vec2(0,PIX2M(_height)), b2Vec2(PIX2M(_width),PIX2M(_height)));
+    ground->CreateFixture(&shape, 0.0f);
+    
+    // left
+    shape.SetAsEdge(b2Vec2(0,PIX2M(_height)), b2Vec2(0, 0));
+    ground->CreateFixture(&shape, 0.0f);
+    
+    // right
+    shape.SetAsEdge(b2Vec2(PIX2M(_width),PIX2M(_height)), b2Vec2(PIX2M(_width),0));
+    ground->CreateFixture(&shape, 0.0f);
 }
 
 //--------------------------------------------------------------
 void mtlBox2d::update() {
-	world->Step(TIMESTEP, VEL_ITERATIONS, POS_ITERATIONS);
-	world->Validate();
+	m_world->Step(TIMESTEP, VEL_ITERATIONS, POS_ITERATIONS);
+}
+
+//--------------------------------------------------------------
+void mtlBox2d::setGravity(const b2Vec2& _gravity) {
+    m_world->SetGravity(PIX2M(_gravity));
+}
+
+//--------------------------------------------------------------
+void mtlBox2d::setGravityB2(const b2Vec2& _gravity) {
+    m_world->SetGravity(_gravity);
 }
 
 //--------------------------------------------------------------
 b2Vec2 mtlBox2d::getGravity() const {
-    return world->GetGravity();
+    return M2PIX(m_world->GetGravity());
 }
 
 //--------------------------------------------------------------
-void mtlBox2d::setGravity(const b2Vec2& gravity) {
-    world->SetGravity(gravity);
+b2Vec2 mtlBox2d::getGravityB2() const {
+    return m_world->GetGravity();
 }
 
 //--------------------------------------------------------------
@@ -108,15 +111,15 @@ void mtlBox2d::debug() {
 
 //--------------------------------------------------------------
 b2World* mtlBox2d::getWorld() {
-    return world;
+    return m_world;
 }
 
 //--------------------------------------------------------------
 int mtlBox2d::getBodyCount() { 
-    return world->GetBodyCount();
+    return m_world->GetBodyCount();
 }
 
 //--------------------------------------------------------------
 int mtlBox2d::getJointCount() { 
-    return world->GetJointCount();
+    return m_world->GetJointCount();
 }
