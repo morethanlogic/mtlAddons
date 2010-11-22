@@ -11,7 +11,7 @@
 #include "mtlBox2dCircle.h"
 
 //------------------------------------------------
-mtlBox2dCircle::mtlBox2dCircle() {
+mtlBox2dCircle::mtlBox2dCircle() : mtlBox2dBaseShape() {
     dirVector = new GLfloat[4];
 }
 
@@ -21,61 +21,48 @@ mtlBox2dCircle::~mtlBox2dCircle() {
 }
 
 //------------------------------------------------
-void mtlBox2dCircle::setup(b2World* _world, float _x, float _y, float _size, float _ang, bool _fixed) {
+void mtlBox2dCircle::setup(b2World* _world, float _x, float _y, float _radius, float _angle, bool _static) {
     if (!setWorld(_world)) return;
     
-    circle.radius   = _size / BOX2D_SCALE;
-    fixed           = _fixed;
+    // create a body and add it to the world
+    bd.type = _static? b2_staticBody : b2_dynamicBody;
+    bd.position.Set(PIX2M(_x), PIX2M(_y));
+    bd.angle = _angle;
     
-    if (fixed) {
-        circle.density		= 0;
-        circle.restitution  = 0;
-        circle.friction		= 0;
-    } else {
-        circle.density		= mass;
-        circle.restitution  = bounce;
-        circle.friction		= friction;
-    }
-    bodyDef.position.Set(_x / BOX2D_SCALE, _y / BOX2D_SCALE);	
+    body = world->CreateBody(&bd);
     
-    body = world->CreateBody(&bodyDef);
-    body->SetLinearVelocity(b2Vec2(0.0, 0.0));
-    body->SetAngularVelocity(_ang * M_PI / 180.f);
-    body->CreateShape(&circle);
-    body->SetMassFromShapes();
+    // add collision shapes to that body
+    radius = _radius;
+    b2CircleShape m_circle;
+    m_circle.m_radius = PIX2M(radius);
+
+    fd.shape = &m_circle;
+    fixture = body->CreateFixture(&fd);
 }
 
 //------------------------------------------------
-void mtlBox2dCircle::draw() {
-    if (dead && !body) return;
+void mtlBox2dCircle::debug() {
+    if (!body) return;
     
-    float radius = getRadius();
+    pos = getPosition();
     
-    glPushMatrix();
-    {
-        glTranslatef(getPosition().x, getPosition().y, 0);
-        
-        ofNoFill();
-        if (fixed) {
-            ofSetColor(mtlBox2d::debugFixedColor.r, mtlBox2d::debugFixedColor.g, mtlBox2d::debugFixedColor.b, mtlBox2d::debugFixedColor.a);
-        } else {
-            ofSetColor(mtlBox2d::debugBodyColor.r, mtlBox2d::debugBodyColor.g, mtlBox2d::debugBodyColor.b, mtlBox2d::debugBodyColor.a);
-        }
-        ofCircle(0, 0, radius);	
+    // draw the shape
+    if (fixed) {
+        ofSetColor(mtlBox2d::debugFixedColor.r, mtlBox2d::debugFixedColor.g, mtlBox2d::debugFixedColor.b, mtlBox2d::debugFixedColor.a);
+    } else {
+        ofSetColor(mtlBox2d::debugBodyColor.r, mtlBox2d::debugBodyColor.g, mtlBox2d::debugBodyColor.b, mtlBox2d::debugBodyColor.a);
     }
-    glPopMatrix();
-    
-    const b2XForm& xf   = body->GetXForm();
-    b2Vec2	center		= body->GetPosition();
-    b2Vec2	axis		= xf.R.col1;
-    b2Vec2	p			= center + radius / BOX2D_SCALE * axis;
+    ofCircle(pos.x, pos.y, radius);
+
+    // draw the angle vector
+    float angle = getRotationB2();
+
+    dirVector[0] = pos.x;
+    dirVector[1] = pos.y;
+    dirVector[2] = pos.x + radius * cosf(angle);
+    dirVector[3] = pos.y + radius * sinf(angle);
     
     ofSetColor(mtlBox2d::debugJointColor.r, mtlBox2d::debugJointColor.g, mtlBox2d::debugJointColor.b, mtlBox2d::debugJointColor.a);
-    dirVector[0] = getPosition().x;
-    dirVector[1] = getPosition().y;
-    dirVector[2] = p.x * BOX2D_SCALE;
-    dirVector[3] = p.y * BOX2D_SCALE;
-    
     glEnableClientState(GL_VERTEX_ARRAY);		
     glVertexPointer(2, GL_FLOAT, 0, dirVector);
     glDrawArrays(GL_LINES, 0, 2);
@@ -83,52 +70,27 @@ void mtlBox2dCircle::draw() {
 
 //------------------------------------------------
 float mtlBox2dCircle::getRadius() {
-    if (body) {
-        return (((b2CircleShape*)(body->GetShapeList()))->GetRadius() * BOX2D_SCALE);
-    }
-    return 0;
-}
-
-
-//------------------------------------------------
-float mtlBox2dCircle::getRotation() {
-    const  b2XForm& xf	= body->GetXForm();
-    float  r			= getRadius() / BOX2D_SCALE;
-    b2Vec2 a			= xf.R.col1;
-    b2Vec2 p1			= body->GetPosition();
-    b2Vec2 p2			= p1 + r * a;
-    
-    float dx = p2.x+r/2 - p1.x+r/2;
-    float dy = p2.y - p1.y;
-    return ofRadToDeg(atan2(dy, dx));
-}
-
-//------------------------------------------------ 
-void mtlBox2dCircle::disableCollision() {
-    circle.filter.maskBits = 0x0;		
+    return radius;
 }
 
 //------------------------------------------------
 void mtlBox2dCircle::setRadius(float _radius) {
-    // destroy the current shape
-    for (b2Shape* s = body->GetShapeList(); s; s = s->GetNext()) {
-        body->DestroyShape(s);
-    }
+    // save the transform parameters
+    bd.position = getPosition();
+    bd.angle    = getRotation();
     
-    // rebuild the new circle shape
-    circle.radius = _radius / BOX2D_SCALE;
-    if (fixed) {
-        circle.density		= 0;
-        circle.restitution  = 0;
-        circle.friction		= 0;
-    } else {
-        circle.density		= mass;
-        circle.restitution  = bounce;
-        circle.friction		= friction;
-    }
+    // destroy the current body
+    world->DestroyBody(body);
     
-    body->SetLinearVelocity(b2Vec2(0.0, 0.0));
-    body->CreateShape(&circle);
-    body->SetMassFromShapes();
+    // create a body and add it to the world
+    body = world->CreateBody(&bd);
+    
+    // add collision shapes to that body
+    radius = _radius;
+    b2CircleShape m_circle;
+    m_circle.m_radius = PIX2M(radius);
+    
+    fd.shape = &m_circle;
+    fixture = body->CreateFixture(&fd);
 }
 

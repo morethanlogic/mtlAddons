@@ -18,17 +18,15 @@ class mtlBox2dCircle : public mtlBox2dBaseShape {
     public:
                     mtlBox2dCircle();
                     ~mtlBox2dCircle();
-        void        setup(b2World* _world, float _x, float _y, float _size, float _ang = 0, bool _fixed = false);
+        void        setup(b2World* _world, float _x, float _y, float _radius, float _angle = 0, bool _static = false);
     
-        void        draw();
+        void        debug();
     
         float       getRadius();
-        float       getRotation();
-        void        disableCollision();
         void        setRadius(float _radius);
     
     protected:
-        b2CircleDef circle;
+        float       radius;
         GLfloat*    dirVector;
     
 };
