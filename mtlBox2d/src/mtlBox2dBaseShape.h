@@ -17,54 +17,56 @@ class mtlBox2dBaseShape {
     
     public:
                         mtlBox2dBaseShape();
-                        ~mtlBox2dBaseShape();
+        virtual         ~mtlBox2dBaseShape();
     
         bool            setWorld(b2World* _world);
-        void            setPhysics(float _mass, float _bounce, float _friction);
-        void            setFilterData(b2FilterData _data);
+        void            setPhysics(float _mass, float _friction, float _bounce);
+        void            setFilterData(const b2Filter _data);
     
-        void            enableGravity(bool b);
-        void            setFixedRotation(bool b);
+        void            setFixedRotation(bool _fixed);
+        bool            isFixedRotation();
     
-        void            setRotationFriction(float f);
-        void            setDamping(float f);
-    
-        void            setPosition(b2Vec2 pt);
-        void            setPosition(float x, float y);
+        void            setAngularDamping(float _damping);
+        float           getAngularDamping();
+        void            setLinearDamping(float _damping);
+        float           getLinearDamping();
+        
+        void            setPosition(const b2Vec2& _pos);
+        void            setPositionB2(const b2Vec2& _pos);
         const b2Vec2    getPosition();
-        const b2Vec2&   getB2DPosition();
+        const b2Vec2&   getPositionB2();
     
-        void            setVelocity(const b2Vec2& v);
-        void            setVelocity(float x, float y);
-        const b2Vec2    getVelocity();
+        float           getRotation();
+        const float     getRotationB2();
     
-        void            setAngularVelocity(float v);
+        void            setLinearVelocity(const b2Vec2& _vel);
+        void            setLinearVelocityB2(const b2Vec2& _vel);
+        const b2Vec2    getLinearVelocity();
+        const b2Vec2    getLinearVelocityB2();
+    
+        void            setAngularVelocity(float _vel);
         float           getAngularVelocity();
     
-        void            addDamping(float fx, float fy);
-        void            addDamping(float f);
-        void            addForce(b2Vec2 pt, b2Vec2 amt);
-        void            addImpulseForce(b2Vec2 pt, b2Vec2 amt);
-        void            addAttractionPoint(b2Vec2 pt, float amt, float minDist = 0);
-        void            addAttractionPoint(float x, float y, float amt, float minDist = 0);
-    
-        void            destroyShape();
+        void            applyForce(b2Vec2 _pt, b2Vec2 _amount);
+        void            applyForceB2(b2Vec2 _pt, b2Vec2 _amount);
+        void            applyLinearImpulse(b2Vec2 _pt, b2Vec2 _amount);
+        void            applyLinearImpulseB2(b2Vec2 _pt, b2Vec2 _amount);
+        void            applyAngularImpulse(float _amount);
+        
+        void            destroy();
     
         virtual void    update() {}
-        virtual void    draw() {}
+        virtual void    debug() {}
+        virtual void    draw() { debug(); }
     
         b2World*        world;
         b2Body*         body;
+        b2Fixture*      fixture;
     
     protected:
-        b2BodyDef       bodyDef;
-        
-        bool            dead;
-        bool            alive;
-        bool            fixed;
-        
-        float           mass;
-        float           bounce;
-        float           friction;
+        // cached structs
+        b2BodyDef       bd;
+        b2FixtureDef    fd;
+        b2Vec2          pos;
 	
 };

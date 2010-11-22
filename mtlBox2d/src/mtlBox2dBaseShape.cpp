@@ -12,27 +12,20 @@
 
 //------------------------------------------------
 mtlBox2dBaseShape::mtlBox2dBaseShape() {
-    dead  = false;
-    alive = false;
-    fixed = false;
-    
     world = NULL;
     body  = NULL;
     
-    mass     = 0.0;
-    bounce   = 0.0;
-    friction = 0.0;
-    bodyDef.allowSleep = true;
+    bd.allowSleep = true;
 }		
 
 //------------------------------------------------ 
 mtlBox2dBaseShape::~mtlBox2dBaseShape() {
-    if (alive) destroyShape();
+    if (body) destroy();
 }
 
 //------------------------------------------------ 
 bool mtlBox2dBaseShape::setWorld(b2World* _world) {
-    if (_world == NULL) {
+    if (!_world) {
 		ofLog(OF_LOG_WARNING, "mtlBox2dBaseShape::setWorld() Must have a valid b2World");
 		return false;
 	}
@@ -42,49 +35,68 @@ bool mtlBox2dBaseShape::setWorld(b2World* _world) {
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setPhysics(float _mass, float _bounce, float _friction) {
-    mass     = _mass; 
-    bounce   = _bounce; 
-    friction = _friction;
+void mtlBox2dBaseShape::setPhysics(float _mass, float _friction, float _bounce) {
+    fd.density     = _mass;
+    fd.friction    = _friction;
+    fd.restitution = _bounce;
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setFilterData(b2FilterData _data) {
-    for (b2Shape* s = body->GetShapeList(); s; s = s->GetNext()) {
-        s->SetFilterData(_data);
-        world->Refilter(s);
-    }
+void mtlBox2dBaseShape::setFilterData(const b2Filter _data) {
+    if (fixture)
+        fixture->SetFilterData(_data);
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::enableGravity(bool b) {
-    bodyDef.isGravitated = b;
+void mtlBox2dBaseShape::setFixedRotation(bool _fixed) {
+    if (body)
+        body->SetFixedRotation(_fixed);
+    else
+        bd.fixedRotation = _fixed;
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setFixedRotation(bool b) {
-    bodyDef.fixedRotation = b;
+bool mtlBox2dBaseShape::isFixedRotation() {
+    if (body)
+        return body->IsFixedRotation();
+    
+    return bd.fixedRotation;
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setRotationFriction(float f) {
-    bodyDef.angularDamping = f;
+void mtlBox2dBaseShape::setAngularDamping(float _damping) {
+    if (body)
+        body->SetAngularDamping(_damping);
+    else
+        bd.angularDamping = _damping;
+}
+
+//------------------------------------------------
+float mtlBox2dBaseShape::getAngularDamping() {
+    return body->GetAngularDamping();
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setDamping(float f) {
-    body->SetLinearDamping(f);
+void mtlBox2dBaseShape::setLinearDamping(float _damping) {
+    if (body)
+        body->SetLinearDamping(_damping);
+    else
+        bd.linearDamping = _damping;
+}
+
+//------------------------------------------------
+float mtlBox2dBaseShape::getLinearDamping() {
+    return body->GetLinearDamping();
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setPosition(b2Vec2 pt) {
-    body->SetXForm(pt, 0);
-    body->WakeUp();
+void mtlBox2dBaseShape::setPosition(const b2Vec2& _pos) {
+    body->SetTransform(PIX2M(_pos), 0);
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setPosition(float x, float y) {
-    setPosition(b2Vec2(x / BOX2D_SCALE, y / BOX2D_SCALE));
+void mtlBox2dBaseShape::setPositionB2(const b2Vec2& _pos) {
+    body->SetTransform(_pos, 0);
 }
                 
 //------------------------------------------------ 
@@ -93,32 +105,43 @@ const b2Vec2 mtlBox2dBaseShape::getPosition() {
 }
 
 //------------------------------------------------
-const b2Vec2& mtlBox2dBaseShape::getB2DPosition() {
+const b2Vec2& mtlBox2dBaseShape::getPositionB2() {
     return body->GetPosition();
 }
 
-//------------------------------------------------ 
-void mtlBox2dBaseShape::setVelocity(const b2Vec2& v) {
-    if (body != NULL) {
-        body->SetLinearVelocity(v);
-    }
+//------------------------------------------------
+float mtlBox2dBaseShape::getRotation() {
+    return RAD2DEG(body->GetAngle());
+}
+
+//------------------------------------------------
+const float mtlBox2dBaseShape::getRotationB2() {
+    return body->GetAngle();
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setVelocity(float x, float y) {
-    setVelocity(b2Vec2(x, y));
+void mtlBox2dBaseShape::setLinearVelocity(const b2Vec2& _vel) {
+    body->SetLinearVelocity(PIX2M(_vel));
 }
 
 //------------------------------------------------ 
-const b2Vec2 mtlBox2dBaseShape::getVelocity() {
+void mtlBox2dBaseShape::setLinearVelocityB2(const b2Vec2& _vel) {
+    body->SetLinearVelocity(_vel);
+}
+
+//------------------------------------------------ 
+const b2Vec2 mtlBox2dBaseShape::getLinearVelocity() {
+    return M2PIX(body->GetLinearVelocity());
+}
+
+//------------------------------------------------ 
+const b2Vec2 mtlBox2dBaseShape::getLinearVelocityB2() {
     return body->GetLinearVelocity();
 }
 
 //------------------------------------------------ 
-void mtlBox2dBaseShape::setAngularVelocity(float v) {
-    if(body != NULL) {
-        body->SetAngularVelocity(v);
-    }
+void mtlBox2dBaseShape::setAngularVelocity(float _vel) {
+    body->SetAngularVelocity(_vel);
 }
 
 //------------------------------------------------ 
@@ -126,73 +149,47 @@ float mtlBox2dBaseShape::getAngularVelocity() {
     return body->GetAngularVelocity();
 }
 
-//------------------------------------------------ 
-void mtlBox2dBaseShape::addDamping(float fx, float fy) {
-    if (body != NULL) {
-        b2Vec2 v = body->GetLinearVelocity();
-        v.x *= fx;	
-        v.y *= fy;
-        body->SetLinearVelocity(v);
-    }
+//------------------------------------------------
+void mtlBox2dBaseShape::applyForce(b2Vec2 _pt, b2Vec2 _amount) {
+    if (body)
+        body->ApplyForce(PIX2M(_pt), _amount);
 }
 
 //------------------------------------------------
-void mtlBox2dBaseShape::addDamping(float f) {
-    addDamping(f, f);
+void mtlBox2dBaseShape::applyForceB2(b2Vec2 _pt, b2Vec2 _amount) {
+    if (body)
+        body->ApplyForce(_pt, _amount);
 }
 
 //------------------------------------------------
-void mtlBox2dBaseShape::addForce(b2Vec2 pt, b2Vec2 amt) {
-    if (body != NULL) {
-        body->ApplyForce(b2Vec2(pt.x / BOX2D_SCALE, pt.y / BOX2D_SCALE), amt);
-    }
+void mtlBox2dBaseShape::applyLinearImpulse(b2Vec2 _pt, b2Vec2 _amount) {
+    if (body)
+        body->ApplyLinearImpulse(PIX2M(_pt), _amount);
 }
 
 //------------------------------------------------
-void mtlBox2dBaseShape::addImpulseForce(b2Vec2 pt, b2Vec2 amt) {
-    if (body != NULL) {
-        body->ApplyImpulse(b2Vec2(pt.x / BOX2D_SCALE, pt.y / BOX2D_SCALE), amt);
-    }
+void mtlBox2dBaseShape::applyLinearImpulseB2(b2Vec2 _pt, b2Vec2 _amount) {
+    if (body)
+        body->ApplyLinearImpulse(_pt, _amount);
 }
 
 //------------------------------------------------
-void mtlBox2dBaseShape::addAttractionPoint(b2Vec2 pt, float amt, float minDist) {
-    if (body != NULL) {
-        b2Vec2 P(pt.x / BOX2D_SCALE, pt.y / BOX2D_SCALE);
-        b2Vec2 D = P - body->GetPosition(); 
-        if (D.LengthSquared() < minDist) {
-            P.Normalize();
-            b2Vec2 F = amt * D;
-            body->ApplyForce(F, P);
-        }
-    }
+void mtlBox2dBaseShape::applyAngularImpulse(float _amount) {
+    if (body)
+        body->ApplyAngularImpulse(_amount);
 }
 
 //------------------------------------------------
-void mtlBox2dBaseShape::addAttractionPoint(float x, float y, float amt, float minDist) {
-    addAttractionPoint(b2Vec2(x, y), amt, minDist);
-}
-
-//------------------------------------------------
-void mtlBox2dBaseShape::destroyShape() {
-    if (world == NULL) {
+void mtlBox2dBaseShape::destroy() {
+    if (!world) {
         ofLog(OF_LOG_WARNING, "mtlBox2dBaseShape::setWorld() Must have a valid b2World");
         return;
     } else if (!body) {
         ofLog(OF_LOG_WARNING, "mtlBox2dBaseShape::setWorld() NULL body");
         return;
-    } else if (dead) {
-        ofLog(OF_LOG_WARNING, "mtlBox2dBaseShape::setWorld() Already dead");
-        return;
-    }
-    
-    for (b2Shape* s = body->GetShapeList(); s; s = s->GetNext()) {
-        body->DestroyShape(s);
     }
     
     world->DestroyBody(body);
     body  = NULL;
-    dead  = true;
-    alive = false;
 }
 
