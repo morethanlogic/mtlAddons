@@ -11,18 +11,18 @@
  */
 
 #include "ofMain.h"
-#include "Box2D.h"
 
+#include <Box2D.h>
 #define BOX2D_SCALE     30.f
 #define FPS             30
 #define TIMESTEP        1.f / FPS
 #define VEL_ITERATIONS  8
 #define POS_ITERATIONS  3
 
-#define M2PIX(m)    (BOX2D_SCALE * m)
-#define PIX2M(p)    ((1.f / BOX2D_SCALE) * p)
-#define DEG2RAD(d)  (d * M_PI / 180.f)
-#define RAD2DEG(r)  (r * 180.f / M_PI)
+#define M2PIX(m)        (BOX2D_SCALE * m)
+#define PIX2M(p)        ((1.f / BOX2D_SCALE) * p)
+#define DEG2RAD(d)      (d * M_PI / 180.f)
+#define RAD2DEG(r)      (r * 180.f / M_PI)
 
 //========================================================================
 // In order to deal with the two coordinate systems (pixels and meters),
@@ -58,8 +58,9 @@ class mtlBox2d {
                                    int _fixedR, int _fixedG, int _fixedB, int _fixedA);
         
     private:
-        b2Body*		bounds;
         b2World         *world;
+        b2Body          *bounds;
+        b2MouseJoint    *mouseJoint;
 
 };
 

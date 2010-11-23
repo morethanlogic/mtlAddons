@@ -59,25 +59,25 @@ void mtlBox2d::createBounds(float _x, float _y, float _width, float _height) {
     }
     
     b2BodyDef bd;
-    b2Body* ground = m_world->CreateBody(&bd);
+    bounds = world->CreateBody(&bd);
     
     b2PolygonShape shape;
     
     // bottom
     shape.SetAsEdge(b2Vec2(0,0), b2Vec2(PIX2M(_width),0));
-    ground->CreateFixture(&shape, 0.0f);
+    bounds->CreateFixture(&shape, 0.0f);
     
     // top
     shape.SetAsEdge(b2Vec2(0,PIX2M(_height)), b2Vec2(PIX2M(_width),PIX2M(_height)));
-    ground->CreateFixture(&shape, 0.0f);
+    bounds->CreateFixture(&shape, 0.0f);
     
     // left
     shape.SetAsEdge(b2Vec2(0,PIX2M(_height)), b2Vec2(0, 0));
-    ground->CreateFixture(&shape, 0.0f);
+    bounds->CreateFixture(&shape, 0.0f);
     
     // right
     shape.SetAsEdge(b2Vec2(PIX2M(_width),PIX2M(_height)), b2Vec2(PIX2M(_width),0));
-    ground->CreateFixture(&shape, 0.0f);
+    bounds->CreateFixture(&shape, 0.0f);
 }
 
 //--------------------------------------------------------------
