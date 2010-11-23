@@ -13,6 +13,8 @@
 #include "ofMain.h"
 
 #include <Box2D.h>
+#include "mtlBox2dHitTestCallback.h"
+
 #define BOX2D_SCALE     30.f
 #define FPS             30
 #define TIMESTEP        1.f / FPS
@@ -37,7 +39,7 @@ class mtlBox2d {
                     ~mtlBox2d();
     
         void        createBounds(float _x, float _y, float _width, float _height);
-            
+    
         void        update();
         void        debug();
         
@@ -49,6 +51,19 @@ class mtlBox2d {
         b2World*    getWorld();
         int			getBodyCount();
         int			getJointCount();
+    
+        void        enableMouseJoints();
+        void        disableMouseJoints();
+    
+#ifdef TARGET_OF_IPHONE
+        void        onPress(ofTouchEventArgs &args);
+        void        onDrag(ofTouchEventArgs &args);
+        void        onRelease(ofTouchEventArgs &args);
+#else
+        void        onPress(ofMouseEventArgs &args);
+        void        onDrag(ofMouseEventArgs &args);
+        void        onRelease(ofMouseEventArgs &args);
+#endif
     
         static ofColor debugBodyColor;
         static ofColor debugJointColor;

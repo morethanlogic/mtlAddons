@@ -123,3 +123,86 @@ int mtlBox2d::getBodyCount() {
 int mtlBox2d::getJointCount() { 
     return world->GetJointCount();
 }
+
+//--------------------------------------------------------------
+void mtlBox2d::enableMouseJoints() {
+#ifdef TARGET_OF_IPHONE
+	ofAddListener(ofEvents.touchDown,  this, &mtlBox2d::onPress);
+	ofAddListener(ofEvents.touchMoved, this, &mtlBox2d::onDrag);
+	ofAddListener(ofEvents.touchUp,    this, &mtlBox2d::onRelease);
+#else
+	ofAddListener(ofEvents.mousePressed,  this, &mtlBox2d::onPress);
+	ofAddListener(ofEvents.mouseDragged,  this, &mtlBox2d::onDrag);
+	ofAddListener(ofEvents.mouseReleased, this, &mtlBox2d::onRelease);
+#endif
+}
+
+//--------------------------------------------------------------
+void mtlBox2d::disableMouseJoints() {
+#ifdef TARGET_OF_IPHONE
+	ofRemoveListener(ofEvents.touchDown,  this, &mtlBox2d::onPress);
+	ofRemoveListener(ofEvents.touchMoved, this, &mtlBox2d::onDrag);
+	ofRemoveListener(ofEvents.touchUp,    this, &mtlBox2d::onRelease);
+#else
+	ofRemoveListener(ofEvents.mousePressed,  this, &mtlBox2d::onPress);
+	ofRemoveListener(ofEvents.mouseDragged,  this, &mtlBox2d::onDrag);
+	ofRemoveListener(ofEvents.mouseReleased, this, &mtlBox2d::onRelease);
+#endif
+}
+
+//--------------------------------------------------------------
+#ifdef TARGET_OF_IPHONE
+void mtlBox2d::onPress(ofTouchEventArgs &args) {
+#else
+void mtlBox2d::onPress(ofMouseEventArgs &args) {
+#endif
+    if (mouseJoint) return;
+    
+    b2Vec2 mousePt = PIX2M(b2Vec2(args.x, args.y));
+    
+	// make a small box
+	b2AABB aabb;
+	b2Vec2 d;
+	d.Set(0.001f, 0.001f);
+	aabb.lowerBound = mousePt - d;
+	aabb.upperBound = mousePt + d;
+    
+	// query the world for overlapping shapes
+	mtlBox2dHitTestCallback callback(mousePt);
+	world->QueryAABB(&callback, aabb);
+    
+	if (callback.fixture) {
+		b2Body* hitBody = callback.fixture->GetBody();
+		b2MouseJointDef md;
+		md.bodyA = bounds;
+		md.bodyB = hitBody;
+		md.target = mousePt;
+		md.maxForce = 1000.0f * hitBody->GetMass();
+		mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);
+		hitBody->SetAwake(true);
+	}   
+}
+    
+//--------------------------------------------------------------
+#ifdef TARGET_OF_IPHONE
+void mtlBox2d::onDrag(ofTouchEventArgs &args) {
+#else
+void mtlBox2d::onDrag(ofMouseEventArgs &args) {
+#endif
+    if (mouseJoint) {
+        b2Vec2 mousePt = PIX2M(b2Vec2(args.x, args.y));
+		mouseJoint->SetTarget(mousePt);
+	}
+}
+    
+//--------------------------------------------------------------
+#ifdef TARGET_OF_IPHONE
+void mtlBox2d::onRelease(ofTouchEventArgs &args) {
+#else
+void mtlBox2d::onRelease(ofMouseEventArgs &args) {
+#endif
+    if (mouseJoint) {
+		world->DestroyJoint(mouseJoint);
+		mouseJoint = NULL;
+	}
+}
