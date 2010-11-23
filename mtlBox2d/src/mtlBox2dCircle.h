@@ -27,6 +27,6 @@ class mtlBox2dCircle : public mtlBox2dBaseShape {
     
     protected:
         float       radius;
-        GLfloat*    dirVector;
+        GLfloat*    dir;
     
 };

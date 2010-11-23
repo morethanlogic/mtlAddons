@@ -12,12 +12,12 @@
 
 //------------------------------------------------
 mtlBox2dCircle::mtlBox2dCircle() : mtlBox2dBaseShape() {
-    dirVector = new GLfloat[4];
+    dir = new GLfloat[4];
 }
 
 //------------------------------------------------
 mtlBox2dCircle::~mtlBox2dCircle() {
-    delete [] dirVector;
+    delete [] dir;
 }
 
 //------------------------------------------------
@@ -55,16 +55,16 @@ void mtlBox2dCircle::debug() {
     ofCircle(pos.x, pos.y, radius);
 
     // draw the angle vector
-    float angle = getRotationB2();
+    ang = getRotationB2();
 
-    dirVector[0] = pos.x;
-    dirVector[1] = pos.y;
-    dirVector[2] = pos.x + radius * cosf(angle);
-    dirVector[3] = pos.y + radius * sinf(angle);
+    dir[0] = pos.x;
+    dir[1] = pos.y;
+    dir[2] = pos.x + radius * cosf(ang);
+    dir[3] = pos.y + radius * sinf(ang);
     
     ofSetColor(mtlBox2d::debugJointColor.r, mtlBox2d::debugJointColor.g, mtlBox2d::debugJointColor.b, mtlBox2d::debugJointColor.a);
     glEnableClientState(GL_VERTEX_ARRAY);		
-    glVertexPointer(2, GL_FLOAT, 0, dirVector);
+    glVertexPointer(2, GL_FLOAT, 0, dir);
     glDrawArrays(GL_LINES, 0, 2);
 }
 

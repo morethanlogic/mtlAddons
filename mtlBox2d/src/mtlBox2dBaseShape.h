@@ -68,5 +68,6 @@ class mtlBox2dBaseShape {
         b2BodyDef       bd;
         b2FixtureDef    fd;
         b2Vec2          pos;
+        float           ang;
 	
 };
