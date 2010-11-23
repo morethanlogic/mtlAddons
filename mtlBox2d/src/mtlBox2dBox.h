@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *  mtlBox2dRect.h
+ *  mtlBox2dBox.h
  *  mtlBox2d
  *
  *  Created by Elie Zananiri on 10-10-06.
@@ -13,17 +13,18 @@
 #include "mtlBox2dBaseShape.h"
 
 //========================================================================
-class mtlBox2dRect : public mtlBox2dBaseShape {
+class mtlBox2dBox : public mtlBox2dBaseShape {
 	
     public:
-                        mtlBox2dRect();
-                        ~mtlBox2dRect();
-        void            setup(b2World* _world, float _x, float _y, float _width, float _height, float _ang = 0, bool _fixed = false);
+                        mtlBox2dBox();
+                        ~mtlBox2dBox();
+        void            setup(b2World* _world, float _x, float _y, float _width, float _height, float _angle = 0, bool _static = false);
         
-        void            draw();
+        void            debug();
         
     protected:
-        b2PolygonDef    rect;
+        float           width, height;
+        GLfloat*        dir;
         GLfloat*        verts;
     
 };

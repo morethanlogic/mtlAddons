@@ -1,5 +1,5 @@
 /*
- *  mtlBox2dRect.cpp
+ *  mtlBox2dBox.cpp
  *  mtlBox2d
  *
  *  Created by Elie Zananiri on 10-10-06.
@@ -8,69 +8,73 @@
  *
  */
 
-#include "mtlBox2dRect.h"
+#include "mtlBox2dBox.h"
 
 //------------------------------------------------
-mtlBox2dRect::mtlBox2dRect() {
-    verts = new GLfloat[b2_maxPolygonVertices * 2];
+mtlBox2dBox::mtlBox2dBox() {
+    dir   = new GLfloat[4];
+    verts = new GLfloat[4 * 2];
 }
 
 //------------------------------------------------
-mtlBox2dRect::~mtlBox2dRect() {
+mtlBox2dBox::~mtlBox2dBox() {
+    delete [] dir;
     delete [] verts;
 }
 
 //------------------------------------------------
-void mtlBox2dRect::setup(b2World* _world, float _x, float _y, float _width, float _height, float _ang, bool _fixed) {
+void mtlBox2dBox::setup(b2World* _world, float _x, float _y, float _width, float _height, float _angle, bool _static) {
     if (!setWorld(_world)) return;
     
-    rect.SetAsBox(_width / BOX2D_SCALE, _height / BOX2D_SCALE);
-    fixed = _fixed;
+    // create a body and add it to the world
+    bd.type = _static? b2_staticBody : b2_dynamicBody;
+    bd.position.Set(PIX2M(_x), PIX2M(_y));
+    bd.angle = _angle;
     
-    if (fixed) {
-        rect.density		= 0;
-        rect.restitution    = 0;
-        rect.friction		= 0;
-    } else {
-        rect.density		= mass;
-        rect.restitution    = bounce;
-        rect.friction		= friction;
-    }
-    bodyDef.position.Set(_x / BOX2D_SCALE, _y / BOX2D_SCALE);
-    bodyDef.angle = _ang;
+    body = world->CreateBody(&bd);
     
-    body = world->CreateBody(&bodyDef);
-    body->SetLinearVelocity(b2Vec2(0.0, 0.0));
-    body->CreateShape(&rect);
-    body->SetMassFromShapes();
+    // add collision shapes to that body
+    width  = _width;
+    height = _height;
+    b2PolygonShape m_box;
+    m_box.SetAsBox(PIX2M(width/2), PIX2M(height/2));
+    
+    fd.shape = &m_box;
+    fixture = body->CreateFixture(&fd);
 }
 
 //------------------------------------------------
-void mtlBox2dRect::draw() {
-    if (dead && !body) return;
+void mtlBox2dBox::debug() {
+    if (!body) return;
     
-    // wow this is a pain
-    b2Shape* s = body->GetShapeList();
-    const b2XForm& xf = body->GetXForm();
-    b2PolygonShape* poly = (b2PolygonShape*)s;
-    int count = poly->GetVertexCount();
-    const b2Vec2* localVertices = poly->GetVertices();
-    b2Assert(count <= b2_maxPolygonVertices);
-    b2Vec2 currVert;
-    for (int i=0; i < count; i++) {
-        currVert = BOX2D_SCALE * b2Mul(xf, localVertices[i]);
-        verts[i*2 + 0] = currVert.x;
-        verts[i*2 + 1] = currVert.y;
-    }
+    pos = getPosition();
     
-    ofNoFill();
+    // draw the shape
     if (fixed) {
         ofSetColor(mtlBox2d::debugFixedColor.r, mtlBox2d::debugFixedColor.g, mtlBox2d::debugFixedColor.b, mtlBox2d::debugFixedColor.a);
     } else {
         ofSetColor(mtlBox2d::debugBodyColor.r, mtlBox2d::debugBodyColor.g, mtlBox2d::debugBodyColor.b, mtlBox2d::debugBodyColor.a);
     }
+
+    ang = getRotation();
+    glPushMatrix();
+    {
+        glTranslatef(pos.x, pos.y, 0);
+        glRotatef(ang, 0, 0, 1);
+        
+        ofRect(0, 0, width, height);
+    }
+    glPopMatrix();
     
+    // draw the angle vector
+    ang = getRotationB2();
+    dir[0] = pos.x;
+    dir[1] = pos.y;
+    dir[2] = pos.x + width/2 * cosf(ang);
+    dir[3] = pos.y + width/2 * sinf(ang);
+    
+    ofSetColor(mtlBox2d::debugJointColor.r, mtlBox2d::debugJointColor.g, mtlBox2d::debugJointColor.b, mtlBox2d::debugJointColor.a);
     glEnableClientState(GL_VERTEX_ARRAY);		
-    glVertexPointer(2, GL_FLOAT, 0, verts);
-    glDrawArrays(GL_LINE_LOOP, 0, count);
+    glVertexPointer(2, GL_FLOAT, 0, dir);
+    glDrawArrays(GL_LINES, 0, 2);
 }
