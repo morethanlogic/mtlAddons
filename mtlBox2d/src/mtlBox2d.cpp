@@ -38,7 +38,7 @@ void mtlBox2d::setDebugColors(int _bodyR,  int _bodyG,  int _bodyB,  int _bodyA,
 //--------------------------------------------------------------
 mtlBox2d::mtlBox2d() {
     // create the world
-    m_world = new b2World(b2Vec2(0, 0), true);
+    world = new b2World(b2Vec2(0, 0), true);
     
     setDebugColors(204,   0,   0, 255, 
                    252, 213,  10, 255,
@@ -47,13 +47,13 @@ mtlBox2d::mtlBox2d() {
 
 //--------------------------------------------------------------
 mtlBox2d::~mtlBox2d() {
-    delete m_world;
-    m_world = NULL;
+    delete world;
+    world = NULL;
 }
 
 //--------------------------------------------------------------
 void mtlBox2d::createBounds(float _x, float _y, float _width, float _height) {
-    if (m_world == NULL) {
+    if (world == NULL) {
         ofLog(OF_LOG_WARNING, "mtlBox2d::createBounds() Must have a valid b2World");
 		return;
     }
@@ -82,27 +82,27 @@ void mtlBox2d::createBounds(float _x, float _y, float _width, float _height) {
 
 //--------------------------------------------------------------
 void mtlBox2d::update() {
-	m_world->Step(TIMESTEP, VEL_ITERATIONS, POS_ITERATIONS);
+	world->Step(TIMESTEP, VEL_ITERATIONS, POS_ITERATIONS);
 }
 
 //--------------------------------------------------------------
 void mtlBox2d::setGravity(const b2Vec2& _gravity) {
-    m_world->SetGravity(PIX2M(_gravity));
+    world->SetGravity(PIX2M(_gravity));
 }
 
 //--------------------------------------------------------------
 void mtlBox2d::setGravityB2(const b2Vec2& _gravity) {
-    m_world->SetGravity(_gravity);
+    world->SetGravity(_gravity);
 }
 
 //--------------------------------------------------------------
 b2Vec2 mtlBox2d::getGravity() const {
-    return M2PIX(m_world->GetGravity());
+    return M2PIX(world->GetGravity());
 }
 
 //--------------------------------------------------------------
 b2Vec2 mtlBox2d::getGravityB2() const {
-    return m_world->GetGravity();
+    return world->GetGravity();
 }
 
 //--------------------------------------------------------------
@@ -111,15 +111,15 @@ void mtlBox2d::debug() {
 
 //--------------------------------------------------------------
 b2World* mtlBox2d::getWorld() {
-    return m_world;
+    return world;
 }
 
 //--------------------------------------------------------------
 int mtlBox2d::getBodyCount() { 
-    return m_world->GetBodyCount();
+    return world->GetBodyCount();
 }
 
 //--------------------------------------------------------------
 int mtlBox2d::getJointCount() { 
-    return m_world->GetJointCount();
+    return world->GetJointCount();
 }

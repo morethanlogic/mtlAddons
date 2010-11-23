@@ -58,8 +58,8 @@ class mtlBox2d {
                                    int _fixedR, int _fixedG, int _fixedB, int _fixedA);
         
     private:
-        b2World*    m_world;
         b2Body*		bounds;
+        b2World         *world;
 
 };
 
