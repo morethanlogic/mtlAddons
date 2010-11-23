@@ -13,7 +13,7 @@
 #include "ofMain.h"
 
 #include <Box2D.h>
-#include "mtlBox2dHitTestCallback.h"
+#include "mtlBox2dDebugDraw.h"
 
 #define BOX2D_SCALE     30.f
 #define FPS             30
@@ -64,18 +64,12 @@ class mtlBox2d {
         void        onDrag(ofMouseEventArgs &args);
         void        onRelease(ofMouseEventArgs &args);
 #endif
-    
-        static ofColor debugBodyColor;
-        static ofColor debugJointColor;
-        static ofColor debugFixedColor;
-        static void setDebugColors(int _bodyR,  int _bodyG,  int _bodyB,  int _bodyA,
-                                   int _jointR, int _jointG, int _jointB, int _jointA,
-                                   int _fixedR, int _fixedG, int _fixedB, int _fixedA);
         
     private:
-        b2World         *world;
-        b2Body          *bounds;
-        b2MouseJoint    *mouseJoint;
+        b2World             *world;
+        b2Body              *bounds;
+        b2MouseJoint        *mouseJoint;
+        mtlBox2dDebugDraw   debugDraw;
 
 };
 

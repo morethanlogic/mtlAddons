@@ -9,40 +9,13 @@
  */
 
 #include "mtlBox2d.h"
-
-//--------------------------------------------------------------
-ofColor mtlBox2d::debugBodyColor;
-ofColor mtlBox2d::debugJointColor;
-ofColor mtlBox2d::debugFixedColor;
-
-//--------------------------------------------------------------
-void mtlBox2d::setDebugColors(int _bodyR,  int _bodyG,  int _bodyB,  int _bodyA,
-                              int _jointR, int _jointG, int _jointB, int _jointA,
-                              int _fixedR, int _fixedG, int _fixedB, int _fixedA) {
-    debugBodyColor.r  = _bodyR;
-    debugBodyColor.g  = _bodyG;
-    debugBodyColor.b  = _bodyB;
-    debugBodyColor.a  = _bodyA;
-    
-    debugJointColor.r = _jointR;
-    debugJointColor.g = _jointG;
-    debugJointColor.b = _jointB;
-    debugJointColor.a = _jointA;
-    
-    debugFixedColor.r = _fixedR;
-    debugFixedColor.g = _fixedG;
-    debugFixedColor.b = _fixedB;
-    debugFixedColor.a = _fixedA;
-}
+#include "mtlBox2dHitTestCallback.h"
 
 //--------------------------------------------------------------
 mtlBox2d::mtlBox2d() {
     // create the world
     world = new b2World(b2Vec2(0, 0), true);
-    
-    setDebugColors(204,   0,   0, 255, 
-                   252, 213,  10, 255,
-                   255, 255, 255, 255);
+    world->SetDebugDraw(&debugDraw);
 }
 
 //--------------------------------------------------------------
@@ -53,7 +26,7 @@ mtlBox2d::~mtlBox2d() {
 
 //--------------------------------------------------------------
 void mtlBox2d::createBounds(float _x, float _y, float _width, float _height) {
-    if (world == NULL) {
+    if (!world) {
         ofLog(OF_LOG_WARNING, "mtlBox2d::createBounds() Must have a valid b2World");
 		return;
     }
@@ -107,6 +80,7 @@ b2Vec2 mtlBox2d::getGravityB2() const {
 
 //--------------------------------------------------------------
 void mtlBox2d::debug() {
+    world->DrawDebugData();
 }
 
 //--------------------------------------------------------------

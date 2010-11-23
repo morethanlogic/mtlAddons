@@ -56,8 +56,7 @@ class mtlBox2dBaseShape {
         void            destroy();
     
         virtual void    update() {}
-        virtual void    debug() {}
-        virtual void    draw() { debug(); }
+        virtual void    draw() {}
     
         b2World*        world;
         b2Body*         body;
