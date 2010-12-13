@@ -16,8 +16,6 @@
 #include "mtlBox2dDebugDraw.h"
 
 #define BOX2D_SCALE     30.f
-#define FPS             30
-#define TIMESTEP        1.f / FPS
 #define VEL_ITERATIONS  8
 #define POS_ITERATIONS  3
 

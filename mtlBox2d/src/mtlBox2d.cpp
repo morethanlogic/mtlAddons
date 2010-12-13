@@ -55,7 +55,7 @@ void mtlBox2d::createBounds(float _x, float _y, float _width, float _height) {
 
 //--------------------------------------------------------------
 void mtlBox2d::update() {
-	world->Step(TIMESTEP, VEL_ITERATIONS, POS_ITERATIONS);
+	world->Step(1 / ofGetFrameRate(), VEL_ITERATIONS, POS_ITERATIONS);
 }
 
 //--------------------------------------------------------------
