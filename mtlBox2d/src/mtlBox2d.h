@@ -49,6 +49,7 @@ class mtlBox2d {
         b2Vec2      getGravityB2() const;
         
         b2World*    getWorld();
+        b2Body*     getBounds();
         int			getBodyCount();
         int			getJointCount();
     

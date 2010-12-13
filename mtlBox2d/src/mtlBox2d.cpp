@@ -89,6 +89,11 @@ b2World* mtlBox2d::getWorld() {
 }
 
 //--------------------------------------------------------------
+b2Body* mtlBox2d::getBounds() {
+    return bounds;
+}
+
+//--------------------------------------------------------------
 int mtlBox2d::getBodyCount() { 
     return world->GetBodyCount();
 }
