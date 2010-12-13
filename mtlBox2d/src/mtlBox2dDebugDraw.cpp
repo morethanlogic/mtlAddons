@@ -83,14 +83,8 @@ void mtlBox2dDebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius, co
     }
     glEnd();
 
-    // TODO: Fix this axis thing, it's rendering funny
-//    b2Vec2 p = M2PIX(center + radius * axis);
-//    glBegin(GL_LINES);
-//    {
-//        glVertex2f(center.x, center.y);
-//        glVertex2f(p.x, p.y);
-//    }
-//    glEnd();
+	// draw the axis line
+	DrawSegment(center, center + radius*axis, color);
 }
 
 //--------------------------------------------------------------
