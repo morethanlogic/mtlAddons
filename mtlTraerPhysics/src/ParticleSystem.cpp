@@ -97,6 +97,12 @@ namespace mtl {
         delete particles[i];
         particles.erase(particles.begin() + i);
     }
+    
+    //--------------------------------------------------------------
+    Spring* ParticleSystem::makeSpring(Particle* _a, Particle* _b, float _springConstant, float _damping) {
+        float restLength = _a->distanceTo(_b);
+        return makeSpring(_a, _b, _springConstant, _damping, restLength);
+    }
 
     //--------------------------------------------------------------
     Spring* ParticleSystem::makeSpring(Particle* _a, Particle* _b, float _springConstant, float _damping, float _restLength) {

@@ -48,6 +48,7 @@ namespace mtl {
         Particle*           getParticleAt(int i);
         void                removeParticleAt(int i);
         
+        Spring*             makeSpring(Particle* _a, Particle* _b, float _springConstant, float _damping);
         Spring*             makeSpring(Particle* _a, Particle* _b, float _springConstant, float _damping, float _restLength);
         int                 getNumSprings();
         Spring*             getSpringAt(int i);
