@@ -1,0 +1,31 @@
+more than logic
+A collection of C++ libraries for openFrameworks (http://www.openframeworks.cc)
+
+To install, clone this repo at the root of your openFrameworks 0062 directory.
+Examples available at https://github.com/morethanlogic/mtlExamples.
+
+mtlBox2d
+--------------------------------
+A Box2d (http://www.box2d.org) wrapper. Uses Box2d version 2.1.2. 
+Heavily based on Todd Vanderlin's ofxBox2d wrapper (http://code.google.com/p/vanderlin/)
+
+mtlBusyIndicator
+--------------------------------
+A bridge/delegate/controller/whateveryouwanttocallit for the iPhone UIActivityIndicatorView. 
+ofxiPhone only!
+
+mtlSceneManager
+--------------------------------
+A C++ framework for managing scenes (aka views) in openFrameworks applications for the iPhone. Very useful for creating applications with many states (menus, option screens, games, ...) and transitioning between them.
+Requires prisonerjohn's fork of the ofxTween addon (https://github.com/prisonerjohn/ofxTween).
+ofxiPhone only! (although porting it to desktop oF should be pretty straightforward)
+
+mtlSignedPixels
+--------------------------------
+A simple class for performing signed operations on pixels. Useful if your calculations on pixels sometimes go in the negative realm...
+
+mtlTraerPhysics
+--------------------------------
+An openFrameworks port of Jeffrey Traer Bernstein's physics library for Processing (http://traer.cc/mainsite/physics/). No collisions but super fast and easy to use.
+
+Enjoy!
