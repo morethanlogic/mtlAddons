@@ -41,34 +41,6 @@ void mtlBox2dCircle::setup(b2World* _world, float _x, float _y, float _radius, f
 }
 
 //------------------------------------------------
-//void mtlBox2dCircle::debug() {
-//    if (!body) return;
-//    
-//    pos = getPosition();
-//    
-//    // draw the shape
-//    if (fixed) {
-//        ofSetColor(mtlBox2d::debugFixedColor.r, mtlBox2d::debugFixedColor.g, mtlBox2d::debugFixedColor.b, mtlBox2d::debugFixedColor.a);
-//    } else {
-//        ofSetColor(mtlBox2d::debugBodyColor.r, mtlBox2d::debugBodyColor.g, mtlBox2d::debugBodyColor.b, mtlBox2d::debugBodyColor.a);
-//    }
-//    ofCircle(pos.x, pos.y, radius);
-//
-//    // draw the angle vector
-//    ang = getRotationB2();
-//
-//    dir[0] = pos.x;
-//    dir[1] = pos.y;
-//    dir[2] = pos.x + radius * cosf(ang);
-//    dir[3] = pos.y + radius * sinf(ang);
-//    
-//    ofSetColor(mtlBox2d::debugJointColor.r, mtlBox2d::debugJointColor.g, mtlBox2d::debugJointColor.b, mtlBox2d::debugJointColor.a);
-//    glEnableClientState(GL_VERTEX_ARRAY);		
-//    glVertexPointer(2, GL_FLOAT, 0, dir);
-//    glDrawArrays(GL_LINES, 0, 2);
-//}
-
-//------------------------------------------------
 float mtlBox2dCircle::getRadius() {
     return radius;
 }

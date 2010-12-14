@@ -20,8 +20,6 @@ class mtlBox2dCircle : public mtlBox2dBaseShape {
                     ~mtlBox2dCircle();
         void        setup(b2World* _world, float _x, float _y, float _radius, float _angle = 0, bool _static = false);
     
-        //void        debug();
-    
         float       getRadius();
         void        setRadius(float _radius);
     

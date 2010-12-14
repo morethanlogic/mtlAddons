@@ -20,8 +20,6 @@ class mtlBox2dBox : public mtlBox2dBaseShape {
                         ~mtlBox2dBox();
         void            setup(b2World* _world, float _x, float _y, float _width, float _height, float _angle = 0, bool _static = false);
         
-        //void            debug();
-        
     protected:
         float           width, height;
         GLfloat*        dir;
