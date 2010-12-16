@@ -128,6 +128,16 @@ namespace mtl {
     }
     
     //--------------------------------------------------------------
+    void ParticleSystem::removeParticle(Particle* _particle) {
+        for (int i=0; i < particles.size(); i++) {
+            if (particles[i] == _particle) {
+                removeParticleAt(i);
+                return;
+            }
+        }
+    }
+    
+    //--------------------------------------------------------------
     Spring* ParticleSystem::makeSpring(Particle* _a, Particle* _b, float _springConstant, float _damping) {
         float restLength = _a->distanceTo(_b);
         return makeSpring(_a, _b, _springConstant, _damping, restLength);
@@ -157,6 +167,16 @@ namespace mtl {
     }
     
     //--------------------------------------------------------------
+    void ParticleSystem::removeSpring(Spring* _spring) {
+        for (int i=0; i < springs.size(); i++) {
+            if (springs[i] == _spring) {
+                removeSpringAt(i);
+                return;
+            }
+        }
+    }
+    
+    //--------------------------------------------------------------
     Attraction* ParticleSystem::makeAttraction(Particle* _a, Particle* _b, float _strength, float _minDistance) {
         Attraction* a = new Attraction(_a, _b, _strength, _minDistance);
         attractions.push_back(a);
@@ -180,6 +200,16 @@ namespace mtl {
     }
     
     //--------------------------------------------------------------
+    void ParticleSystem::removeAttraction(Attraction* _attraction) {
+        for (int i=0; i < attractions.size(); i++) {
+            if (attractions[i] == _attraction) {
+                removeAttractionAt(i);
+                return;
+            }
+        }
+    }
+    
+    //--------------------------------------------------------------
     void ParticleSystem::addCustomForce(Force* _force) {
         customForces.push_back(_force);
     }
@@ -198,6 +228,16 @@ namespace mtl {
     void ParticleSystem::removeCustomForceAt(int i) {
         delete customForces[i];
         customForces.erase(customForces.begin() + i);
+    }
+    
+    //--------------------------------------------------------------
+    void ParticleSystem::removeCustomForce(Force* _force) {
+        for (int i=0; i < customForces.size(); i++) {
+            if (customForces[i] == _force) {
+                removeCustomForceAt(i);
+                return;
+            }
+        }
     }
 
     //--------------------------------------------------------------

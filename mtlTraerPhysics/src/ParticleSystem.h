@@ -76,22 +76,26 @@ namespace mtl {
         int                 getNumParticles();
         Particle*           getParticleAt(int i);
         void                removeParticleAt(int i);
+        void                removeParticle(Particle* _particle);
         
         Spring*             makeSpring(Particle* _a, Particle* _b, float _springConstant, float _damping);
         Spring*             makeSpring(Particle* _a, Particle* _b, float _springConstant, float _damping, float _restLength);
         int                 getNumSprings();
         Spring*             getSpringAt(int i);
         void                removeSpringAt(int i);
+        void                removeSpring(Spring* _spring);
         
         Attraction*         makeAttraction(Particle* _a, Particle* _b, float _strength, float _minDistance);
         int                 getNumAttractions();
         Attraction*         getAttractionAt(int i);
         void                removeAttractionAt(int i);
+        void                removeAttraction(Attraction* _attraction);
         
         void                addCustomForce(Force* _force);
         int                 getNumCustomForces();
         Force*              getCustomForceAt(int i);
         void                removeCustomForceAt(int i);
+        void                removeCustomForce(Force* _force);
         
         void                clear();
         
