@@ -43,9 +43,9 @@
 //--------------------------------------------------------------
 mtlBox2dDebugDraw::mtlBox2dDebugDraw() {
     SetFlags(1 * e_shapeBit | 
-             0 * e_jointBit | 
+             1 * e_jointBit | 
              0 * e_aabbBit  |
-             1 * e_pairBit  | 
+             0 * e_pairBit  | 
              1 * e_centerOfMassBit);
 }
 
