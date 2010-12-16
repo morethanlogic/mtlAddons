@@ -123,6 +123,29 @@ namespace mtl {
     
     //--------------------------------------------------------------
     void ParticleSystem::removeParticleAt(int i) {
+        // remove any springs that use this particle
+        vector<Force*> toRemove;
+        for (int j=0; j < springs.size(); j++) {
+            if (springs[j]->getA() == particles[i] || springs[j]->getB() == particles[i]) {
+                toRemove.push_back(springs[j]);
+            }
+        }
+        for (int k=0; k < toRemove.size(); k++) {
+            removeSpring((Spring *)toRemove[k]);
+        }
+        
+        // remove any attractions that use this particle
+        toRemove.clear();
+        for (int j=0; j < attractions.size(); j++) {
+            if (attractions[j]->getA() == particles[i] || attractions[j]->getB() == particles[i]) {
+                toRemove.push_back(attractions[j]);
+            }
+        }
+        for (int k=0; k < toRemove.size(); k++) {
+            removeAttraction((Attraction *)toRemove[k]);
+        }
+        
+        // delete the particle
         delete particles[i];
         particles.erase(particles.begin() + i);
     }
