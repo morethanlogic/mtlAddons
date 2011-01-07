@@ -67,7 +67,7 @@ class mtlBox2d {
     
         void        createBounds(float _x, float _y, float _width, float _height);
     
-        void        update();
+        void        update(float _fps = 30.0f);
         void        debug();
         
         void        setGravity(const b2Vec2& _gravity);
